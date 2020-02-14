@@ -2,62 +2,75 @@ const express = require('express')
 const app = express()
 const logger = require('morgan')
 const bodyParser = require('body-parser')
-const mysql = require('mysql')
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'dev'
-})
-
-connection.connect((error) => {
-    if (error) console.log(error)
-    console.log('Dtb connection')
-})
+const mainNavigation = require('./src/routes')
 
 app.listen(8001, () => console.log('\n This server is running'))
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.get('/', (request, response) => {
-    connection.query('SELECT * FROM book', (error, result) => {
-        if (error) console.log(error)
-        response.json(result)
-    })
-})
+app.use('/', mainNavigation)
 
 // app.get('/', (request, response) => {
-//     response.json({ name: "Lukman sefriyanto" })
+//   const searchName = request.query.name || ''
+//   connection.query(`SELECT * FROM book WHERE name LIKE '%${searchName}%'`, (error, result) => {
+//     if (error) console.log(error)
+//     response.json(result)
+//   })
 // })
 
-app.post('/', (request, response) => {
+// app.get('/:bookId', (request, response) => {
+//   const bookId = request.params.bookId
+//   console.log(bookId)
 
-    const data = {
-        name: request.body.name,
-        writer: request.body.writer,
-        description: request.body.description,
-        publisher: request.body.publisher,
-        year: request.body.year,
-        stock: request.body.stock,
-        genre: request.body.genre,
-        created_at: new Date(),
-        updated_at: new Date()
+//   connection.query('SELECT * FROM book WHERE id = ?', bookId, (error, result) => {
+//     if (error) console.log(error)
+//     response.json(result)
+//   })
+// })
 
-    }
-    connection.query('INSERT INTO book SET ?', data, (error, result) => {
-        if (error) console.log(error)
+// app.post('/', (request, response) => {
+//   const data = {
+//     name: request.body.name,
+//     writer: request.body.writer,
+//     description: request.body.description,
+//     publisher: request.body.publisher,
+//     year: request.body.year,
+//     stock: request.body.stock,
+//     genre: request.body.genre,
+//     created_at: new Date(),
+//     updated_at: new Date()
+//   }
+//   connection.query('INSERT INTO book SET ?', data, (error, result) => {
+//     if (error) console.log(error)
+//     response.json(result)
+//   })
+// })
 
-        response.json(result)
-    })
-})
-    // app.post('/', (request, response) => {
-    //     const name = request.body.name
-    //     const data = {
-    //         name: request.body.name,
-    //         location: request.body.location,
-    //         company: request.body.company
-    //     }
+// app.patch('/:bookId', (request, response) => {
+//   const bookId = request.params.bookId
 
-//     response.json({ data })
+//   const data = {
+//     name: request.body.name,
+//     writer: request.body.writer,
+//     description: request.body.description,
+//     publisher: request.body.publisher,
+//     year: request.body.year,
+//     stock: request.body.stock,
+//     genre: request.body.genre,
+//     updated_at: new Date()
+//   }
+
+//   connection.query('UPDATE book SET ? WHERE id = ?', [data, bookId], (error, result) => {
+//     if (error) console.log(error)
+//     response.json(result)
+//   })
+// })
+
+// app.delete('/:bookId', (request, response) => {
+//   const bookId = request.params.bookId
+//   connection.query('DELETE FROM book WHERE id = ?', bookId, (error, result) => {
+//     if (error) console.log(error)
+//     response.json(result)
+//   })
 // })
